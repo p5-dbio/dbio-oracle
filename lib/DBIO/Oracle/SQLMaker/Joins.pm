@@ -6,6 +6,18 @@ use strict;
 
 use base qw( DBIO::Oracle::SQLMaker );
 
+=head1 DESCRIPTION
+
+L<DBIO::Oracle::SQLMaker> subclass that generates Oracle's pre-ANSI
+WHERE-clause join syntax (C<table1, table2 WHERE table1.id = table2.id>)
+instead of standard C<JOIN ... ON> syntax.
+
+This is used automatically by L<DBIO::Oracle::Storage::WhereJoins> for
+Oracle databases older than version 9.0. Left and right outer joins are
+supported via Oracle's C<(+)> syntax. Full outer joins are not supported.
+
+=cut
+
 sub select {
   my ($self, $table, $fields, $where, $rs_attrs, @rest) = @_;
 
@@ -105,5 +117,17 @@ sub _recurse_oracle_joins {
 
   return { -and => \@where };
 }
+
+=head1 SEE ALSO
+
+=over
+
+=item * L<DBIO::Oracle::Storage::WhereJoins> - Storage that uses this SQL maker
+
+=item * L<DBIO::Oracle::SQLMaker> - Parent SQL maker with Oracle extensions
+
+=back
+
+=cut
 
 1;

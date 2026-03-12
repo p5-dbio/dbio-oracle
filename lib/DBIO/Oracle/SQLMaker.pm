@@ -12,6 +12,31 @@ BEGIN {
     unless DBIO::Optional::Dependencies->req_ok_for ('id_shortener');
 }
 
+=head1 DESCRIPTION
+
+L<DBIO::SQLMaker> subclass for Oracle databases. Extends standard SQL
+generation with:
+
+=over
+
+=item * Oracle C<CONNECT BY> / C<START WITH> / C<ORDER SIBLINGS BY> hierarchical
+query support via the C<connect_by>, C<connect_by_nocycle>, C<start_with>,
+and C<order_siblings_by> resultset attributes.
+
+=item * C<PRIOR> operator support in WHERE clauses.
+
+=item * Automatic identifier shortening to fit Oracle's 30-character limit,
+using an MD5-based suffix (requires L<Digest::MD5>, L<Math::BigInt>,
+L<Math::Base36>).
+
+=item * Oracle-style C<RETURNING ... INTO ?> syntax for insert-returning.
+
+=back
+
+Used automatically by L<DBIO::Oracle::Storage>.
+
+=cut
+
 sub new {
   my $self = shift;
   my %opts = (ref $_[0] eq 'HASH') ? %{$_[0]} : @_;
@@ -185,6 +210,24 @@ sub _unqualify_colname {
   return $self->_shorten_identifier($self->next::method($fqcn));
 }
 
+=method _shorten_identifier
+
+    my $short = $sql_maker->_shorten_identifier($long_name, \@keywords);
+
+Shortens an identifier to fit Oracle's 30-character limit. Uses camelCase
+compression of C<@keywords> (or the identifier itself if none supplied),
+followed by a base-36 MD5 suffix to guarantee uniqueness.
+
+=cut
+
+=method _insert_returning
+
+Generates Oracle C<RETURNING ... INTO ?> SQL for insert-returning operations.
+The returned values are captured into scalar references in the
+C<returning_container> option.
+
+=cut
+
 sub _insert_returning {
   my ($self, $options) = @_;
 
@@ -233,5 +276,19 @@ sub _insert_returning {
     } (0 .. $#f_names),
   );
 }
+
+=head1 SEE ALSO
+
+=over
+
+=item * L<DBIO::Oracle::Storage> - Oracle storage (uses this SQL maker)
+
+=item * L<DBIO::Oracle::SQLMaker::Joins> - WHERE-clause join syntax for Oracle E<lt> 9
+
+=item * L<DBIO::SQLMaker> - Base SQL maker class
+
+=back
+
+=cut
 
 1;

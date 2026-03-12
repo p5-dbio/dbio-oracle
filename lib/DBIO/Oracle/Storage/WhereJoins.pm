@@ -9,40 +9,39 @@ use mro 'c3';
 
 __PACKAGE__->sql_maker_class('DBIO::Oracle::SQLMaker::Joins');
 
-1;
-
-__END__
-
-=pod
-
-=head1 PURPOSE
-
-This module is used with Oracle < 9.0 due to lack of support for standard
-ANSI join syntax.
-
-=head1 SYNOPSIS
-
-DBIO should automagically detect Oracle and use this module with no
-work from you.
-
 =head1 DESCRIPTION
 
-This class implements Oracle's WhereJoin support.  Instead of:
+L<DBIO::Oracle::Storage> subclass for Oracle databases older than version
+9.0 that do not support standard ANSI C<JOIN ... ON> syntax.
+
+Instead of:
 
     SELECT x FROM y JOIN z ON y.id = z.id
 
-It will write:
+This storage generates:
 
     SELECT x FROM y, z WHERE y.id = z.id
 
-It should properly support left joins, and right joins.  Full outer joins are
-not possible due to the fact that Oracle requires the entire query be written
-to union the results of a left and right join, and by the time this module is
-called to create the where query and table definition part of the SQL query,
-it's already too late.
+Left and right outer joins are supported via Oracle's C<(+)> syntax. Full
+outer joins are not supported because Oracle requires a C<UNION> of left and
+right joins, which cannot be constructed at the WHERE-clause stage.
 
-=head1 METHODS
+DBIO autodetects the Oracle version and uses this storage automatically for
+pre-9.0 servers. See L<DBIO::Oracle::SQLMaker::Joins> for the SQL generation
+details.
 
-See L<DBIO::Oracle::SQLMaker::Joins> for implementation details.
+=head1 SEE ALSO
+
+=over
+
+=item * L<DBIO::Oracle::Storage> - Parent Oracle storage class
+
+=item * L<DBIO::Oracle::SQLMaker::Joins> - SQL maker implementing WHERE-join syntax
+
+=item * L<DBIO::Oracle> - Oracle schema component
+
+=back
 
 =cut
+
+1;

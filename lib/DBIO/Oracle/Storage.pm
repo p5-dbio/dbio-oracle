@@ -768,6 +768,20 @@ It uses the same syntax as L<DBIO::ResultSet/order_by>
   # ORDER SIBLINGS BY
   #     firstname ASC
 
+=head1 SEE ALSO
+
+=over
+
+=item * L<DBIO::Oracle> - Oracle schema component
+
+=item * L<DBIO::Oracle::SQLMaker> - Oracle SQL dialect
+
+=item * L<DBIO::Oracle::Storage::WhereJoins> - WHERE-clause join support for Oracle E<lt> 9
+
+=item * L<DBIO::Storage::DBI> - Base DBI storage class
+
+=back
+
 =cut
 
 1;
