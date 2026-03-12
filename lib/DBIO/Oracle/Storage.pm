@@ -332,7 +332,7 @@ sub _dbh_execute_for_fetch {
   shift->next::method(@_);
 }
 
-=head2 get_autoinc_seq
+=method get_autoinc_seq
 
 Returns the sequence name for an autoincrement column
 
@@ -344,12 +344,12 @@ sub get_autoinc_seq {
   $self->dbh_do('_dbh_get_autoinc_seq', $source, $col);
 }
 
-=head2 datetime_parser_type
+=method datetime_parser_type
 
 This sets the proper DateTime::Format module for use with
 L<DBIO::InflateColumn::DateTime>.
 
-=head2 connect_call_datetime_setup
+=method connect_call_datetime_setup
 
 Used as:
 
@@ -631,7 +631,7 @@ sub _exec_svp_rollback {
   $self->_dbh->do("ROLLBACK TO SAVEPOINT $name")
 }
 
-=head2 relname_to_table_alias
+=method relname_to_table_alias
 
 L<DBIO> uses L<DBIO::Relationship> names as table aliases in
 queries.
@@ -655,7 +655,7 @@ sub relname_to_table_alias {
   return $self->sql_maker->_shorten_identifier($alias);
 }
 
-=head2 with_deferred_fk_checks
+=method with_deferred_fk_checks
 
 Runs a coderef between:
 
@@ -688,7 +688,7 @@ sub with_deferred_fk_checks {
 
 Following additional attributes can be used in resultsets.
 
-=head2 connect_by or connect_by_nocycle
+=method connect_by or connect_by_nocycle
 
 =over 4
 
@@ -722,7 +722,7 @@ and child rows of the hierarchy.
   #     parentid = prior persionid
 
 
-=head2 start_with
+=method start_with
 
 =over 4
 
@@ -745,7 +745,7 @@ It uses the same syntax as L<DBIO::ResultSet/search>
   # CONNECT BY
   #     parentid = prior persionid
 
-=head2 order_siblings_by
+=method order_siblings_by
 
 =over 4
 
