@@ -2,16 +2,13 @@ use strict;
 use warnings;
 use Test::More;
 
-BEGIN {
-  require DBIO::Optional::Dependencies;
-  plan skip_all => 'Test needs ' . DBIO::Optional::Dependencies->req_missing_for ('id_shortener')
-    unless DBIO::Optional::Dependencies->req_ok_for ('id_shortener');
-}
+plan skip_all => 'Test needs Math::Base36'
+  unless eval { require Math::Base36; 1 };
 
 use Test::Exception;
 use Data::Dumper::Concise;
 use DBIO::Test ':DiffSQL';
-use DBIO::SQLMaker::Oracle;
+use DBIO::Oracle::SQLMaker;
 
 # FIXME - TEMPORARY until this merges with master
 use constant IGNORE_NONLOCAL_BINDTYPES => 1;
@@ -60,8 +57,8 @@ my @handle_tests = (
     # TODO: NOCYCLE parameter doesn't work
 );
 
-my $sqla_oracle = DBIO::SQLMaker::Oracle->new( quote_char => '"', name_sep => '.' );
-isa_ok($sqla_oracle, 'DBIO::SQLMaker::Oracle');
+my $sqla_oracle = DBIO::Oracle::SQLMaker->new( quote_char => '"', name_sep => '.' );
+isa_ok($sqla_oracle, 'DBIO::Oracle::SQLMaker');
 
 
 for my $case (@handle_tests) {

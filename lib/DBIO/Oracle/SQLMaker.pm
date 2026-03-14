@@ -6,12 +6,6 @@ use strict;
 
 use base qw( DBIO::SQLMaker );
 
-BEGIN {
-  use DBIO::Optional::Dependencies;
-  die('The following extra modules are required for Oracle-based Storages ' . DBIO::Optional::Dependencies->req_missing_for ('id_shortener') . "\n" )
-    unless DBIO::Optional::Dependencies->req_ok_for ('id_shortener');
-}
-
 =head1 DESCRIPTION
 
 L<DBIO::SQLMaker> subclass for Oracle databases. Extends standard SQL
@@ -159,7 +153,8 @@ sub _shorten_identifier {
 
   require Digest::MD5;
   require Math::BigInt;
-  require Math::Base36;
+  eval { require Math::Base36; 1 }
+    or $self->throw_exception("Math::Base36 is required for Oracle identifier shortening ($@)");
   my $b36sum = Math::Base36::encode_base36(
     Math::BigInt->from_hex (
       '0x' . Digest::MD5::md5_hex ($to_shorten)

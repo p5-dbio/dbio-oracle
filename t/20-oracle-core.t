@@ -89,7 +89,7 @@ is (
   'insert returning capability guessed correctly'
 );
 
-isa_ok (DBIO::Test::Schema->connect($dsn, $user, $pass)->storage->sql_maker, 'DBIO::SQLMaker::Oracle');
+isa_ok (DBIO::Test::Schema->connect($dsn, $user, $pass)->storage->sql_maker, 'DBIO::Oracle::SQLMaker');
 
 # see if determining a driver with bad credentials throws propely
 throws_ok {
@@ -118,7 +118,7 @@ for my $use_insert_returning ($test_server_supports_insert_returning ? (1,0) : (
     local *DBIO::Test::Schema::connection = subname 'DBIO::Test::Schema::connection' => sub {
       my $s = shift->$old_connection (@_);
       $s->storage->_use_insert_returning ($use_insert_returning);
-      $s->storage->sql_maker_class('DBIO::SQLMaker::OracleJoins') if $force_ora_joins;
+      $s->storage->sql_maker_class('DBIO::Oracle::SQLMaker::Joins') if $force_ora_joins;
       $s;
     };
 

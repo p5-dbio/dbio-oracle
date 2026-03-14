@@ -2,9 +2,8 @@ use strict;
 use warnings;
 
 use Test::More;
-use DBIO::Optional::Dependencies;
-plan skip_all => 'Test needs ' . DBIO::Optional::Dependencies->req_missing_for ('id_shortener')
-  unless DBIO::Optional::Dependencies->req_ok_for ('id_shortener');
+plan skip_all => 'Test needs Math::Base36'
+  unless eval { require Math::Base36; 1 };
 
 use DBIO::Test::Schema::Artist;
 BEGIN {

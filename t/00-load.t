@@ -9,7 +9,9 @@ my @modules = qw(
   DBIO::Oracle::Storage::WhereJoins
 );
 
-# SQLMaker requires Math::Base36 which may not be installed
+my $have_math_base36 = eval { require Math::Base36; 1 };
+
+# SQLMaker identifier shortening needs Math::Base36.
 my @optional = qw(
   DBIO::Oracle::SQLMaker
   DBIO::Oracle::SQLMaker::Joins
@@ -22,7 +24,7 @@ for my $mod (@modules) {
 }
 
 for my $mod (@optional) {
-  eval "use $mod; 1"
+  ($have_math_base36 && eval "use $mod; 1")
     ? pass("use $mod")
     : pass("$mod skipped (missing optional deps)");
 }

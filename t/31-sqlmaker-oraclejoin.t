@@ -3,16 +3,13 @@ use warnings;
 
 use Test::More;
 
-BEGIN {
-  require DBIO::Optional::Dependencies;
-  plan skip_all => 'Test needs ' . DBIO::Optional::Dependencies->req_missing_for ('id_shortener')
-    unless DBIO::Optional::Dependencies->req_ok_for ('id_shortener');
-}
+plan skip_all => 'Test needs Math::Base36'
+  unless eval { require Math::Base36; 1 };
 
 use DBIO::Test ':DiffSQL';
-use DBIO::SQLMaker::OracleJoins;
+use DBIO::Oracle::SQLMaker::Joins;
 
-my $sa = DBIO::SQLMaker::OracleJoins->new;
+my $sa = DBIO::Oracle::SQLMaker::Joins->new;
 
 for my $rhs ( "me.artist", { -ident => "me.artist" } ) {
 
@@ -92,4 +89,3 @@ is_same_sql_bind(
 }
 
 done_testing;
-
