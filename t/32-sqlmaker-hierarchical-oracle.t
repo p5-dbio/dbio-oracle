@@ -2,36 +2,34 @@ use strict;
 use warnings;
 
 use Test::More;
-use lib qw(t/lib);
-
 use DBIO::Optional::Dependencies;
 plan skip_all => 'Test needs ' . DBIO::Optional::Dependencies->req_missing_for ('id_shortener')
   unless DBIO::Optional::Dependencies->req_ok_for ('id_shortener');
 
-use DBICTest::Schema::Artist;
+use DBIO::Test::Schema::Artist;
 BEGIN {
-  DBICTest::Schema::Artist->add_column('parentid');
+  DBIO::Test::Schema::Artist->add_column('parentid');
 
-  DBICTest::Schema::Artist->has_many(
-    children => 'DBICTest::Schema::Artist',
+  DBIO::Test::Schema::Artist->has_many(
+    children => 'DBIO::Test::Schema::Artist',
     { 'foreign.parentid' => 'self.artistid' }
   );
 
-  DBICTest::Schema::Artist->belongs_to(
-    parent => 'DBICTest::Schema::Artist',
+  DBIO::Test::Schema::Artist->belongs_to(
+    parent => 'DBIO::Test::Schema::Artist',
     { 'foreign.artistid' => 'self.parentid' }
   );
 }
 
-use DBICTest ':DiffSQL';
+use DBIO::Test ':DiffSQL';
 
 my $ROWS = DBIO::SQLMaker::ClassicExtensions->__rows_bindtype;
 my $TOTAL = DBIO::SQLMaker::ClassicExtensions->__total_bindtype;
 
 for my $q ( '', '"' ) {
 
-  my $schema = DBICTest->init_schema(
-    storage_type => 'DBIO::Storage::DBI::Oracle::Generic',
+  my $schema = DBIO::Test->init_schema(
+    storage_type => 'DBIO::Oracle::Storage',
     no_deploy => 1,
     quote_char => $q,
   );

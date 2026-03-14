@@ -7,11 +7,9 @@ use Sub::Name;
 use Try::Tiny;
 use DBIO::Optional::Dependencies ();
 
-use lib qw(t/lib);
-
-use DBICTest::Schema::BindType;
+use DBIO::Test::Schema::BindType;
 BEGIN {
-  DBICTest::Schema::BindType->add_columns(
+  DBIO::Test::Schema::BindType->add_columns(
     'blb2' => {
       data_type => 'blob',
       is_nullable => 1,
@@ -23,11 +21,11 @@ BEGIN {
   );
 }
 
-use DBICTest;
+use DBIO::Test;
 
-my ($dsn,  $user,  $pass)  = @ENV{map { "DBICTEST_ORA_${_}" }  qw/DSN USER PASS/};
+my ($dsn,  $user,  $pass)  = @ENV{map { "DBIOTEST_ORA_${_}" }  qw/DSN USER PASS/};
 
-plan skip_all => 'Set $ENV{DBICTEST_ORA_DSN}, _USER and _PASS to run this test.'
+plan skip_all => 'Set $ENV{DBIOTEST_ORA_DSN}, _USER and _PASS to run this test.'
   unless ($dsn && $user && $pass);
 
 plan skip_all => 'Test needs ' . DBIO::Optional::Dependencies->req_missing_for ('test_rdbms_oracle')
@@ -38,7 +36,7 @@ $ENV{NLS_COMP} = "BINARY";
 $ENV{NLS_LANG} = "AMERICAN";
 
 my $v = do {
-  my $si = DBICTest::Schema->connect($dsn, $user, $pass)->storage->_server_info;
+  my $si = DBIO::Test::Schema->connect($dsn, $user, $pass)->storage->_server_info;
   $si->{normalized_dbms_version}
     or die "Unparseable Oracle server version: $si->{dbms_version}\n";
 };
@@ -58,7 +56,7 @@ my $dbh;
 
 my $schema;
 for my $opt (@tryopt) {
-  my $schema = DBICTest::Schema->connect($dsn, $user, $pass, $opt);
+  my $schema = DBIO::Test::Schema->connect($dsn, $user, $pass, $opt);
 
   $dbh = $schema->storage->dbh;
   my $q = $schema->storage->sql_maker->quote_char || '';

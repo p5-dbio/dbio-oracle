@@ -7,8 +7,7 @@ use Sub::Name;
 use Try::Tiny;
 use DBIO::Optional::Dependencies ();
 
-use lib qw(t/lib ../dbio/lib);
-use DBIOTest;
+use DBIO::Test;
 
 my ($dsn,  $user,  $pass)  = @ENV{map { "DBIOTEST_ORA_${_}" }  qw/DSN USER PASS/};
 
@@ -27,7 +26,7 @@ $ENV{NLS_LANG} = "AMERICAN";
 
 {
   package    # hide from PAUSE
-    DBIOTest::Schema::ArtistFQN;
+    DBIO::Test::Schema::ArtistFQN;
 
   use base 'DBIO::Core';
 
@@ -62,18 +61,18 @@ $ENV{NLS_LANG} = "AMERICAN";
   1;
 }
 
-DBIOTest::Schema->load_classes('ArtistFQN');
+DBIO::Test::Schema->load_classes('ArtistFQN');
 
 # This is in Core now, but it's here just to test that it doesn't break
-DBIOTest::Schema::Artist->load_components('PK::Auto');
+DBIO::Test::Schema::Artist->load_components('PK::Auto');
 # These are compat shims for PK::Auto...
-DBIOTest::Schema::CD->load_components('PK::Auto::Oracle');
-DBIOTest::Schema::Track->load_components('PK::Auto::Oracle');
+DBIO::Test::Schema::CD->load_components('PK::Auto::Oracle');
+DBIO::Test::Schema::Track->load_components('PK::Auto::Oracle');
 
 
 # check if we indeed do support stuff
 my $v = do {
-  my $si = DBIOTest::Schema->connect($dsn, $user, $pass)->storage->_server_info;
+  my $si = DBIO::Test::Schema->connect($dsn, $user, $pass)->storage->_server_info;
   $si->{normalized_dbms_version}
     or die "Unparseable Oracle server version: $si->{dbms_version}\n";
 };
@@ -85,16 +84,16 @@ my $test_server_supports_only_orajoins = $v < 9;
 my $test_server_supports_insert_returning = $v >= 8.001;
 
 is (
-  DBIOTest::Schema->connect($dsn, $user, $pass)->storage->_use_insert_returning,
+  DBIO::Test::Schema->connect($dsn, $user, $pass)->storage->_use_insert_returning,
   $test_server_supports_insert_returning,
   'insert returning capability guessed correctly'
 );
 
-isa_ok (DBIOTest::Schema->connect($dsn, $user, $pass)->storage->sql_maker, 'DBIO::SQLMaker::Oracle');
+isa_ok (DBIO::Test::Schema->connect($dsn, $user, $pass)->storage->sql_maker, 'DBIO::SQLMaker::Oracle');
 
 # see if determining a driver with bad credentials throws propely
 throws_ok {
-  DBIOTest::Schema->connect($dsn, "BORKED BORKED USER $user", $pass)->storage->sql_maker;
+  DBIO::Test::Schema->connect($dsn, "BORKED BORKED USER $user", $pass)->storage->sql_maker;
 } qr/DBI Connection failed/;
 
 ##########
@@ -115,8 +114,8 @@ for my $use_insert_returning ($test_server_supports_insert_returning ? (1,0) : (
   for my $force_ora_joins ($test_server_supports_only_orajoins ? (0) : (0,1) ) {
 
     no warnings qw/once redefine/;
-    my $old_connection = DBIOTest::Schema->can('connection');
-    local *DBIOTest::Schema::connection = subname 'DBIOTest::Schema::connection' => sub {
+    my $old_connection = DBIO::Test::Schema->can('connection');
+    local *DBIO::Test::Schema::connection = subname 'DBIO::Test::Schema::connection' => sub {
       my $s = shift->$old_connection (@_);
       $s->storage->_use_insert_returning ($use_insert_returning);
       $s->storage->sql_maker_class('DBIO::SQLMaker::OracleJoins') if $force_ora_joins;
@@ -125,11 +124,11 @@ for my $use_insert_returning ($test_server_supports_insert_returning ? (1,0) : (
 
     for my $opt (@tryopt) {
       # clean all cached sequences from previous run
-      for (map { values %{DBIOTest::Schema->source($_)->columns_info} } (qw/Artist CD Track/) ) {
+      for (map { values %{DBIO::Test::Schema->source($_)->columns_info} } (qw/Artist CD Track/) ) {
         delete $_->{sequence};
       }
 
-      my $schema = DBIOTest::Schema->connect($dsn, $user, $pass, $opt);
+      my $schema = DBIO::Test::Schema->connect($dsn, $user, $pass, $opt);
 
       $dbh = $schema->storage->dbh;
       my $q = $schema->storage->sql_maker->quote_char || '';
@@ -555,7 +554,7 @@ sub _run_tests {
   {
     local $ENV{DBI_DSN};
     ($ENV{DBI_DSN}, my @user_pass_args) = @{ $schema->storage->connect_info };
-    my $s2 = DBIOTest::Schema->connect( undef, @user_pass_args );
+    my $s2 = DBIO::Test::Schema->connect( undef, @user_pass_args );
     ok (! $s2->storage->connected, 'Not connected' );
     is (ref $s2->storage, 'DBIO::Storage::DBI', 'Undetermined driver' );
 

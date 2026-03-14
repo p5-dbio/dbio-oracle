@@ -9,8 +9,7 @@ BEGIN {
     unless DBIO::Optional::Dependencies->req_ok_for ('id_shortener');
 }
 
-use lib qw(t/lib);
-use DBICTest ':DiffSQL';
+use DBIO::Test ':DiffSQL';
 use DBIO::SQLMaker::OracleJoins;
 
 my $sa = DBIO::SQLMaker::OracleJoins->new;

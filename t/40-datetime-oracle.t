@@ -4,13 +4,12 @@ use warnings;
 use Test::More;
 use Test::Exception;
 use DBIO::Optional::Dependencies ();
-use lib qw(t/lib);
-use DBICTest;
+use DBIO::Test;
 
-my ($dsn, $user, $pass) = @ENV{map { "DBICTEST_ORA_${_}" } qw/DSN USER PASS/};
+my ($dsn, $user, $pass) = @ENV{map { "DBIOTEST_ORA_${_}" } qw/DSN USER PASS/};
 
 if (not ($dsn && $user && $pass)) {
-    plan skip_all => 'Set $ENV{DBICTEST_ORA_DSN}, _USER and _PASS to run this test. ' .
+    plan skip_all => 'Set $ENV{DBIOTEST_ORA_DSN}, _USER and _PASS to run this test. ' .
          'Warning: This test drops and creates a table called \'event\'';
 }
 
@@ -25,7 +24,7 @@ $ENV{NLS_LANG} = 'AMERICAN_AMERICA.WE8ISO8859P1';
 $ENV{NLS_SORT} = "BINARY";
 $ENV{NLS_COMP} = "BINARY";
 
-my $schema = DBICTest::Schema->connect($dsn, $user, $pass);
+my $schema = DBIO::Test::Schema->connect($dsn, $user, $pass);
 
 # older oracles do not support a TIMESTAMP datatype
 my $timestamp_datatype = ($schema->storage->_server_info->{normalized_dbms_version}||0) < 9

@@ -7,11 +7,9 @@ use Sub::Name;
 use Try::Tiny;
 use DBIO::Optional::Dependencies ();
 
-use lib qw(t/lib ../dbio/lib);
-
-use DBIOTest::Schema::BindType;
+use DBIO::Test::Schema::BindType;
 BEGIN {
-  DBIOTest::Schema::BindType->add_columns(
+  DBIO::Test::Schema::BindType->add_columns(
     'blb2' => {
       data_type => 'blob',
       is_nullable => 1,
@@ -23,7 +21,7 @@ BEGIN {
   );
 }
 
-use DBIOTest;
+use DBIO::Test;
 
 my ($dsn,  $user,  $pass)  = @ENV{map { "DBIOTEST_ORA_${_}" }  qw/DSN USER PASS/};
 
@@ -38,7 +36,7 @@ $ENV{NLS_COMP} = "BINARY";
 $ENV{NLS_LANG} = "AMERICAN";
 
 my $v = do {
-  my $si = DBIOTest::Schema->connect($dsn, $user, $pass)->storage->_server_info;
+  my $si = DBIO::Test::Schema->connect($dsn, $user, $pass)->storage->_server_info;
   $si->{normalized_dbms_version}
     or die "Unparseable Oracle server version: $si->{dbms_version}\n";
 };
@@ -58,7 +56,7 @@ my $dbh;
 
 my $schema;
 for my $opt (@tryopt) {
-  my $schema = DBIOTest::Schema->connect($dsn, $user, $pass, $opt);
+  my $schema = DBIO::Test::Schema->connect($dsn, $user, $pass, $opt);
 
   $dbh = $schema->storage->dbh;
   my $q = $schema->storage->sql_maker->quote_char || '';

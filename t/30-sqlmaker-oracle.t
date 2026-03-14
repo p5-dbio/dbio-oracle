@@ -10,8 +10,7 @@ BEGIN {
 
 use Test::Exception;
 use Data::Dumper::Concise;
-use lib qw(t/lib);
-use DBICTest ':DiffSQL';
+use DBIO::Test ':DiffSQL';
 use DBIO::SQLMaker::Oracle;
 
 # FIXME - TEMPORARY until this merges with master
@@ -181,9 +180,9 @@ for my $q ('', '"') {
 
   # offline version of a couple live tests
 
-  my $schema = DBICTest->init_schema(
+  my $schema = DBIO::Test->init_schema(
     # pretend this is Oracle
-    storage_type => '::DBI::Oracle::Generic',
+    storage_type => 'DBIO::Oracle::Storage',
     quote_names => $q,
   );
 
@@ -230,7 +229,7 @@ for my $q ('', '"') {
 
       isa_ok(
         $rows[0],
-        'DBICTest::Schema::Artist',
+        'DBIO::Test::Schema::Artist',
         'At least one artist from db',
       );
     },
@@ -279,7 +278,7 @@ for my $q ('', '"') {
 
       isa_ok(
         ( $megapain_rs->all )[0],
-        'DBICTest::Schema::Artist',
+        'DBIO::Test::Schema::Artist',
         'At least one artist from db',
       );
 

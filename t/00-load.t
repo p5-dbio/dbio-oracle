@@ -4,6 +4,7 @@ use Test::More;
 
 my @modules = qw(
   DBIO::Oracle
+  DBIO::Oracle::Loader
   DBIO::Oracle::Storage
   DBIO::Oracle::Storage::WhereJoins
 );

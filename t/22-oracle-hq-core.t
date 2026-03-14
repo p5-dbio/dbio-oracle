@@ -6,43 +6,41 @@ use Test::More;
 
 # I *strongly* suspect Oracle has an implicit stable output order when
 # dealing with HQs. So just punt on the entire shuffle thing.
-BEGIN { $ENV{DBIC_SHUFFLE_UNORDERED_RESULTSETS} = 0 }
+BEGIN { $ENV{DBIO_SHUFFLE_UNORDERED_RESULTSETS} = 0 }
 
 
 use DBIO::Optional::Dependencies ();
-use lib qw(t/lib);
-
 $ENV{NLS_SORT} = "BINARY";
 $ENV{NLS_COMP} = "BINARY";
 $ENV{NLS_LANG} = "AMERICAN";
 
-my ($dsn,  $user,  $pass)  = @ENV{map { "DBICTEST_ORA_${_}" }  qw/DSN USER PASS/};
+my ($dsn,  $user,  $pass)  = @ENV{map { "DBIOTEST_ORA_${_}" }  qw/DSN USER PASS/};
 
-plan skip_all => 'Set $ENV{DBICTEST_ORA_DSN}, _USER and _PASS to run this test.'
+plan skip_all => 'Set $ENV{DBIOTEST_ORA_DSN}, _USER and _PASS to run this test.'
  unless ($dsn && $user && $pass);
 
 plan skip_all => 'Test needs ' . DBIO::Optional::Dependencies->req_missing_for ('rdbms_oracle')
   unless DBIO::Optional::Dependencies->req_ok_for ('rdbms_oracle');
 
-use DBICTest::Schema::Artist;
+use DBIO::Test::Schema::Artist;
 BEGIN {
-  DBICTest::Schema::Artist->add_column('parentid');
+  DBIO::Test::Schema::Artist->add_column('parentid');
 
-  DBICTest::Schema::Artist->has_many(
-    children => 'DBICTest::Schema::Artist',
+  DBIO::Test::Schema::Artist->has_many(
+    children => 'DBIO::Test::Schema::Artist',
     { 'foreign.parentid' => 'self.artistid' }
   );
 
-  DBICTest::Schema::Artist->belongs_to(
-    parent => 'DBICTest::Schema::Artist',
+  DBIO::Test::Schema::Artist->belongs_to(
+    parent => 'DBIO::Test::Schema::Artist',
     { 'foreign.artistid' => 'self.parentid' }
   );
 }
 
-use DBICTest;
-use DBICTest::Schema;
+use DBIO::Test;
+use DBIO::Test::Schema;
 
-my $schema = DBICTest::Schema->connect($dsn, $user, $pass);
+my $schema = DBIO::Test::Schema->connect($dsn, $user, $pass);
 
 note "Oracle Version: " . $schema->storage->_server_info->{dbms_version};
 

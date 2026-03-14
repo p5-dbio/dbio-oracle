@@ -10,8 +10,6 @@ BEGIN { $ENV{DBIO_SHUFFLE_UNORDERED_RESULTSETS} = 0 }
 
 
 use DBIO::Optional::Dependencies ();
-use lib qw(t/lib ../dbio/lib);
-
 $ENV{NLS_SORT} = "BINARY";
 $ENV{NLS_COMP} = "BINARY";
 $ENV{NLS_LANG} = "AMERICAN";
@@ -24,25 +22,25 @@ plan skip_all => 'Set $ENV{DBIOTEST_ORA_DSN}, _USER and _PASS to run this test.'
 plan skip_all => 'Test needs ' . DBIO::Optional::Dependencies->req_missing_for ('rdbms_oracle')
   unless DBIO::Optional::Dependencies->req_ok_for ('rdbms_oracle');
 
-use DBIOTest::Schema::Artist;
+use DBIO::Test::Schema::Artist;
 BEGIN {
-  DBIOTest::Schema::Artist->add_column('parentid');
+  DBIO::Test::Schema::Artist->add_column('parentid');
 
-  DBIOTest::Schema::Artist->has_many(
-    children => 'DBIOTest::Schema::Artist',
+  DBIO::Test::Schema::Artist->has_many(
+    children => 'DBIO::Test::Schema::Artist',
     { 'foreign.parentid' => 'self.artistid' }
   );
 
-  DBIOTest::Schema::Artist->belongs_to(
-    parent => 'DBIOTest::Schema::Artist',
+  DBIO::Test::Schema::Artist->belongs_to(
+    parent => 'DBIO::Test::Schema::Artist',
     { 'foreign.artistid' => 'self.parentid' }
   );
 }
 
-use DBIOTest;
-use DBIOTest::Schema;
+use DBIO::Test;
+use DBIO::Test::Schema;
 
-my $schema = DBIOTest::Schema->connect($dsn, $user, $pass);
+my $schema = DBIO::Test::Schema->connect($dsn, $user, $pass);
 
 note "Oracle Version: " . $schema->storage->_server_info->{dbms_version};
 

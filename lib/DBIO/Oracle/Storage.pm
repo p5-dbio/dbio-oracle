@@ -440,7 +440,7 @@ sub bind_attribute_by_data_type {
 
     # this is a hot-ish codepath, store an escape-flag in the DBD namespace, so that
     # things like Class::Unload work (unlikely but possible)
-    unless ($DBD::Oracle::__DBIC_DBD_VERSION_CHECK_OK__) {
+    unless ($DBD::Oracle::__DBIO_DBD_VERSION_CHECK_OK__) {
 
       # no earlier - no later
       if ($DBD::Oracle::VERSION eq '1.23') {
@@ -450,7 +450,7 @@ sub bind_attribute_by_data_type {
         );
       }
 
-      $DBD::Oracle::__DBIC_DBD_VERSION_CHECK_OK__ = 1;
+      $DBD::Oracle::__DBIO_DBD_VERSION_CHECK_OK__ = 1;
     }
 
     return {
