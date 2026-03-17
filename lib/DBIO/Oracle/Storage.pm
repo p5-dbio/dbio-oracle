@@ -14,7 +14,6 @@ use Context::Preserve 'preserve_context';
 use Try::Tiny;
 use namespace::clean;
 
-__PACKAGE__->sql_limit_dialect ('RowNum');
 __PACKAGE__->sql_quote_char ('"');
 __PACKAGE__->sql_maker_class('DBIO::Oracle::SQLMaker');
 __PACKAGE__->datetime_parser_type('DateTime::Format::Oracle');

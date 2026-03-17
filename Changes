@@ -2,3 +2,5 @@ Revision history for DBIO-Oracle
 
 {{$NEXT}}
     - Initial extraction from DBIO core as separate distribution
+    - Remove sql_limit_dialect (DBIO core uses apply_limit now)
+    - TODO: SQLMaker needs apply_limit with RowNum dialect
