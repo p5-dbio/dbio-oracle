@@ -6,10 +6,10 @@ use Test::Exception;
 use DBIO::Optional::Dependencies ();
 use DBIO::Test;
 
-my ($dsn, $user, $pass) = @ENV{map { "DBIOTEST_ORA_${_}" } qw/DSN USER PASS/};
+my ($dsn, $user, $pass) = @ENV{map { "DBIO_TEST_ORA_${_}" } qw/DSN USER PASS/};
 
 if (not ($dsn && $user && $pass)) {
-    plan skip_all => 'Set $ENV{DBIOTEST_ORA_DSN}, _USER and _PASS to run this test. ' .
+    plan skip_all => 'Set $ENV{DBIO_TEST_ORA_DSN}, _USER and _PASS to run this test. ' .
          'Warning: This test drops and creates a table called \'event\'';
 }
 

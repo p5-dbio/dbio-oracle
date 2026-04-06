@@ -14,9 +14,9 @@ $ENV{NLS_SORT} = "BINARY";
 $ENV{NLS_COMP} = "BINARY";
 $ENV{NLS_LANG} = "AMERICAN";
 
-my ($dsn,  $user,  $pass)  = @ENV{map { "DBIOTEST_ORA_${_}" }  qw/DSN USER PASS/};
+my ($dsn,  $user,  $pass)  = @ENV{map { "DBIO_TEST_ORA_${_}" }  qw/DSN USER PASS/};
 
-plan skip_all => 'Set $ENV{DBIOTEST_ORA_DSN}, _USER and _PASS to run this test.'
+plan skip_all => 'Set $ENV{DBIO_TEST_ORA_DSN}, _USER and _PASS to run this test.'
  unless ($dsn && $user && $pass);
 
 plan skip_all => 'Test needs ' . DBIO::Optional::Dependencies->req_missing_for ('rdbms_oracle')

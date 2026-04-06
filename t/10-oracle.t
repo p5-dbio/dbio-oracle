@@ -9,12 +9,12 @@ use DBIO::Optional::Dependencies ();
 
 use DBIO::Test;
 
-my ($dsn,  $user,  $pass)  = @ENV{map { "DBIOTEST_ORA_${_}" }  qw/DSN USER PASS/};
+my ($dsn,  $user,  $pass)  = @ENV{map { "DBIO_TEST_ORA_${_}" }  qw/DSN USER PASS/};
 
 # optional:
-my ($dsn2, $user2, $pass2) = @ENV{map { "DBIOTEST_ORA_EXTRAUSER_${_}" } qw/DSN USER PASS/};
+my ($dsn2, $user2, $pass2) = @ENV{map { "DBIO_TEST_ORA_EXTRAUSER_${_}" } qw/DSN USER PASS/};
 
-plan skip_all => 'Set $ENV{DBIOTEST_ORA_DSN}, _USER and _PASS to run this test.'
+plan skip_all => 'Set $ENV{DBIO_TEST_ORA_DSN}, _USER and _PASS to run this test.'
   unless ($dsn && $user && $pass);
 
 plan skip_all => 'Test needs ' . DBIO::Optional::Dependencies->req_missing_for ('test_rdbms_oracle')
@@ -31,8 +31,8 @@ $ENV{NLS_LANG} = "AMERICAN";
   use base 'DBIO::Core';
 
   __PACKAGE__->table(
-    $ENV{DBIOTEST_ORA_USER}
-      ? (uc $ENV{DBIOTEST_ORA_USER}) . '.artist'
+    $ENV{DBIO_TEST_ORA_USER}
+      ? (uc $ENV{DBIO_TEST_ORA_USER}) . '.artist'
       : '??_no_user_??'
   );
   __PACKAGE__->add_columns(
@@ -466,7 +466,7 @@ sub _run_tests {
   SKIP: {
   TODO: {
     skip ((join '',
-      'Set DBIOTEST_ORA_EXTRAUSER_DSN, _USER and _PASS to a *DIFFERENT* Oracle user',
+      'Set DBIO_TEST_ORA_EXTRAUSER_DSN, _USER and _PASS to a *DIFFERENT* Oracle user',
       ' to run the cross-schema sequence detection test.'),
     1) unless $dsn2 && $user2 && $user2 ne $user;
 

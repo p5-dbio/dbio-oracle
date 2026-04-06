@@ -22,6 +22,6 @@ class through `DBIO::Storage::DBI` driver registration.
 
 Set environment variables for integration tests:
 
-- `DBIOTEST_ORA_DSN`
-- `DBIOTEST_ORA_USER`
-- `DBIOTEST_ORA_PASS`
+- `DBIO_TEST_ORA_DSN`
+- `DBIO_TEST_ORA_USER`
+- `DBIO_TEST_ORA_PASS`
