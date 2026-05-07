@@ -20,6 +20,9 @@ __PACKAGE__->datetime_parser_type('DateTime::Format::Oracle');
 
 sub __cache_queries_with_max_lob_parts { 2 }
 
+sub dbio_deploy_class { 'DBIO::Oracle::Deploy' }
+sub deploy_setup { }
+
 =head1 SYNOPSIS
 
   # In your result (table) classes
