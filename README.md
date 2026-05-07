@@ -33,3 +33,7 @@ C<DBIO_TEST_ORA_USER>, and C<DBIO_TEST_ORA_PASS>.
 ## See Also
 
 L<DBIO::Introspect::Base>, L<DBIO::Diff::Base>
+
+## Repository
+
+L<https://github.com/p5-dbio/dbio-oracle>
