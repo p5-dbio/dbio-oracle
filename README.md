@@ -1,27 +1,35 @@
-# DBIO-Oracle
+# DBIO::Oracle
 
-Oracle driver distribution for DBIO.
+Oracle database driver for DBIO (fork of DBIx::Class).
 
-## Scope
+## Supports
 
-- Provides Oracle storage behavior: `DBIO::Oracle::Storage`
-- Provides Oracle SQLMaker: `DBIO::Oracle::SQLMaker`
-- Provides Oracle-style join support: `DBIO::Oracle::SQLMaker::Joins`,
-  `DBIO::Oracle::Storage::WhereJoins`
-- Owns Oracle-specific tests from the historical DBIx::Class monolithic test layout
+- desired-state deployment via test-deploy-and-compare (L<DBIO::Oracle::Deploy>)
+- native introspection (L<DBIO::Oracle::Introspect>)
+- native diff (L<DBIO::Oracle::Diff>)
+- native DDL generation (L<DBIO::Oracle::DDL>)
 
-## Migration Notes
+## Usage
 
-- `DBIx::Class::Storage::DBI::Oracle::Generic` -> `DBIO::Oracle::Storage`
-- `DBIx::Class::SQLMaker::Oracle` -> `DBIO::Oracle::SQLMaker`
+    package MyApp::DB;
+    use base 'DBIO::Schema';
+    __PACKAGE__->load_components('Oracle');
 
-When installed, DBIO core can autodetect Oracle DSNs and load the storage
-class through `DBIO::Storage::DBI` driver registration.
+    my $schema = MyApp::DB->connect('dbi:Oracle:database=myapp');
+
+## Requirements
+
+- Perl 5.36+
+- DBD::Oracle
+- DBIO core
 
 ## Testing
 
-Set environment variables for integration tests:
+    prove -l t/
 
-- `DBIO_TEST_ORA_DSN`
-- `DBIO_TEST_ORA_USER`
-- `DBIO_TEST_ORA_PASS`
+Requires a running Oracle instance. Set C<DBIO_TEST_ORA_DSN>,
+C<DBIO_TEST_ORA_USER>, and C<DBIO_TEST_ORA_PASS>.
+
+## See Also
+
+L<DBIO::Introspect::Base>, L<DBIO::Diff::Base>
