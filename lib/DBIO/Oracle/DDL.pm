@@ -5,6 +5,8 @@ our $VERSION = '0.900000';
 use strict;
 use warnings;
 
+use DBIO::SQL::Util qw(_quote_ident);
+
 =head1 DESCRIPTION
 
 C<DBIO::Oracle::DDL> generates Oracle DDL from the DBIO schema class hierarchy.
@@ -101,13 +103,6 @@ sub install_ddl {
   }
 
   return join "\n\n", @stmts;
-}
-
-sub _quote_ident {
-  my ($name) = @_;
-  return $name if $name =~ /^[a-z_][a-z0-9_]*$/i;
-  $name =~ s/"/""/g;
-  return qq{"$name"};
 }
 
 sub _oracle_column_type {

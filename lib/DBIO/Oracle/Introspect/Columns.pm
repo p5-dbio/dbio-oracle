@@ -37,17 +37,6 @@ sub fetch {
   for my $table_name (@table_names) {
     my @col_list;
 
-    # Fetch column info
-    my $sth = $dbh->prepare_cached(q{
-      SELECT column_name, data_type, data_length, data_precision, data_scale,
-             nullable, data_default, column_id
-      FROM all_tab_columns
-      WHERE table_name = ? AND owner = ?
-      ORDER BY column_id
-    });
-    $sth->execute($table_name, $schema);
-    $sth->finish;
-
     my $col_sth = $dbh->prepare_cached(q{
       SELECT column_name, data_type, data_length, data_precision, data_scale,
              nullable, data_default, column_id

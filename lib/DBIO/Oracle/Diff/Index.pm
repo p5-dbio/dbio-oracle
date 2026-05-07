@@ -5,6 +5,8 @@ our $VERSION = '0.900000';
 use strict;
 use warnings;
 
+use DBIO::SQL::Util qw(_quote_ident);
+
 =head1 DESCRIPTION
 
 Index-level diff operations for Oracle.
@@ -85,13 +87,6 @@ sub summary {
   my ($self) = @_;
   my $prefix = $self->action eq 'create' ? '+' : '-';
   return sprintf '  %sindex: %s on %s', $prefix, $self->index_name, $self->table_name;
-}
-
-sub _quote_ident {
-  my ($name) = @_;
-  return $name if $name =~ /^[a-z_][a-z0-9_]*$/i;
-  $name =~ s/"/""/g;
-  return qq{"$name"};
 }
 
 1;

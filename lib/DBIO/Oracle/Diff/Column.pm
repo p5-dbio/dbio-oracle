@@ -5,6 +5,8 @@ our $VERSION = '0.900000';
 use strict;
 use warnings;
 
+use DBIO::SQL::Util qw(_quote_ident);
+
 =head1 DESCRIPTION
 
 Column-level diff operations for Oracle. Oracle supports:
@@ -174,13 +176,6 @@ sub summary {
   my $prefix = $self->action eq 'add' ? '+' : $self->action eq 'drop' ? '-' : '~';
   my $type = $self->new_info ? " ($self->{new_info}{data_type})" : '';
   return sprintf '  %scolumn: %s.%s%s', $prefix, $self->table_name, $self->column_name, $type;
-}
-
-sub _quote_ident {
-  my ($name) = @_;
-  return $name if $name =~ /^[a-z_][a-z0-9_]*$/i;
-  $name =~ s/"/""/g;
-  return qq{"$name"};
 }
 
 sub _oracle_type {

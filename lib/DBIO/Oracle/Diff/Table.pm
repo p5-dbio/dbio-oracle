@@ -5,6 +5,8 @@ our $VERSION = '0.900000';
 use strict;
 use warnings;
 
+use DBIO::SQL::Util qw(_quote_ident);
+
 =head1 DESCRIPTION
 
 Represents a table-level diff operation in Oracle: C<CREATE TABLE> or
@@ -132,13 +134,6 @@ sub summary {
   my ($self) = @_;
   my $prefix = $self->action eq 'create' ? '+' : '-';
   return sprintf '%s table: %s', $prefix, $self->table_name;
-}
-
-sub _quote_ident {
-  my ($name) = @_;
-  return $name if $name =~ /^[a-z_][a-z0-9_]*$/i;
-  $name =~ s/"/""/g;
-  return qq{"$name"};
 }
 
 sub _oracle_type {

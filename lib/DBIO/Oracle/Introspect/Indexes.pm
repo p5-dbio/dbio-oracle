@@ -26,24 +26,6 @@ sub fetch {
   my %indexes;
 
   # Fetch all indexes excluding those backing constraints (index_name != constraint_name)
-  my $sth = $dbh->prepare_cached(q{
-    SELECT i.index_name, i.uniqueness, i.index_type,
-           i.table_name, ic.column_name, ic.column_position
-    FROM all_indexes i
-    JOIN all_ind_columns ic
-      ON i.index_name = ic.index_name
-     AND i.table_name = ic.table_name
-     AND i.owner = ic.index_owner
-    WHERE i.table_owner = ?
-      AND i.index_name NOT IN (
-        SELECT constraint_name FROM all_constraints
-        WHERE owner = ? AND constraint_type IN ('P', 'U')
-      )
-    ORDER BY i.table_name, i.index_name, ic.column_position
-  });
-  $sth->execute($schema, $schema);
-  $sth->finish;
-
   my $idx_sth = $dbh->prepare_cached(q{
     SELECT i.index_name, i.uniqueness, i.index_type,
            i.table_name, ic.column_name, ic.column_position
