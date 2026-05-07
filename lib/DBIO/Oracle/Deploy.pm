@@ -67,17 +67,7 @@ sub install {
   my ($self) = @_;
   my $dbh = $self->_dbh;
 
-  # If DDL class does not exist yet, fall back to legacy deployment_statements
-  my $ddl;
-  if (eval { require DBIO::Oracle::DDL; 1 }) {
-    $ddl = DBIO::Oracle::DDL->install_ddl($self->schema);
-  }
-  else {
-    $self->throw_exception(
-      'DBIO::Oracle::DDL not found — cannot install. '
-      . 'Oracle Deploy requires DBIO::Oracle::DDL to generate DDL.'
-    );
-  }
+  my $ddl = DBIO::Oracle::DDL->install_ddl($self->schema);
 
   for my $stmt (_split_statements($ddl)) {
     $dbh->do($stmt);
@@ -173,14 +163,9 @@ sub _dbh { $_[0]->schema->storage->dbh }
 
 sub _deploy_to_temp {
   my ($self) = @_;
-
-  # Deploy the DBIO schema to temp tables with a _tmp suffix
-  # This is a placeholder — full impl requires DBIO::Oracle::DDL
-  if (eval { require DBIO::Oracle::DDL; 1 }) {
-    my $ddl = DBIO::Oracle::DDL->install_ddl($self->schema);
-    for my $stmt (_split_statements($ddl)) {
-      $self->_dbh->do($stmt);
-    }
+  my $ddl = DBIO::Oracle::DDL->install_ddl($self->schema);
+  for my $stmt (_split_statements($ddl)) {
+    $self->_dbh->do($stmt);
   }
 }
 
